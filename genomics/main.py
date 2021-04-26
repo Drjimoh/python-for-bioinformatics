@@ -4,6 +4,13 @@ __copyright__ = "Copyright 2021, ITSmart Digital Skillz"
 __email__ = "waliu.jimoh@yahoo.com"
 
 
+
+def read_fasta(path):
+    my_file = open(path)
+    content = my_file.read()
+    print(content)
+
+
 class Sequencing:
     def __init__(self, sequence):
         self.sequence = sequence
@@ -46,9 +53,43 @@ class Sequencing:
         gc_percent = (gc_ct/len(self.sequence))*100
         return f"gc count is {gc_ct} and percent gc content is {gc_percent}"
 
+
+    def gc_content_subseq(self, k):
+        """ Returns GC content of non−overlapping sub−sequences of size k
+                . The result is a list. """
+        res = []
+        for i in range(0, len(self.sequence)-k+1, k):
+            subseq = self.sequence[i:i+k]
+            gc = self.gc_count()
+            res.append(gc)
+        return res 
+
+    def transcription(self):
+        "function that computes the RNA corresponding to the DNA sequence provided"
+
+        assert self.validate_dna(), "Invalid DNA sequence"
+        return self.sequence.upper().replace("T", "U")
+
+    def reverse_complement(self):
+        assert self.validate_dna(), "Invalid DNA sequence"
+        comp = ""
+        for c in self.sequence.upper():
+            if c=="A":
+                comp= "T"+comp
+            elif c=="T":
+                comp = "A"+comp
+            elif c=="G":
+                comp = "C"+comp
+            elif c=="C":
+                comp = "G"+comp
+
+        return comp
 if __name__ == '__main__':
-    obj = Sequencing("ACCCCCCCTGGUGGGGxdfss")
+    obj = Sequencing("ATTGCGCGATACCGCG")
     print(obj.validate_dna())
     print(obj.validate_rna())
     print(obj.frequency())
     print(obj.gc_count())
+    print(obj.gc_content_subseq(3))
+    print(obj.transcription())
+    print(obj.reverse_complement())
